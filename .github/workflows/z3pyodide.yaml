@@ -29,7 +29,7 @@ jobs:
       - name: Checkout z3
         uses: sudosubin/git-clone-action@v1.0.1
         with: 
-          repository: github.com/z3prover/z3
+          repository: z3prover/z3
 
       - name: set up python
         id: setup-python
