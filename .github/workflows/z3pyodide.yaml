@@ -1,0 +1,62 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-wasm-emscripten:
+    runs-on: ubuntu-22.04
+    env:
+      PYODIDE_VERSION: 0.22.0a3
+      # PYTHON_VERSION and EMSCRIPTEN_VERSION are determined by PYODIDE_VERSION.
+      # The appropriate versions can be found in the Pyodide repodata.json
+      # "info" field, or in Makefile.envs:
+      # https://github.com/pyodide/pyodide/blob/main/Makefile.envs#L2
+      PYTHON_VERSION: 3.10.7
+      EMSCRIPTEN_VERSION: 3.1.24
+      NODE_VERSION: 18
+    steps:
+      - name: Checkout z3
+        uses: sudosubin/git-clone-action@v1.0.1
+        with: 
+          repository: github.com/z3prover/z3.git
+
+      - name: set up python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - uses: mymindstorm/setup-emsdk@v11
+        with:
+          version: ${{ env.EMSCRIPTEN_VERSION }}
+          actions-cache-folder: emsdk-cache
+
+      - name: Install pyodide-build
+        run: pip install pyodide-build==$PYODIDE_VERSION
+
+      - name: Build
+        run: CFLAGS=-g2 LDFLAGS=-g2 pyodide build
+
+      - name: set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Set up Pyodide virtual environment
+        run: |
+          pyodide venv .venv-pyodide
+          source .venv-pyodide/bin/activate
+          pip install dist/*.whl
+          pip install -r test_requirements.txt
+          
