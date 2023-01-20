@@ -26,13 +26,12 @@ jobs:
       EMSCRIPTEN_VERSION: 3.1.24
       NODE_VERSION: 18
     steps:
+    
       - name: Checkout z3
         uses: sudosubin/git-clone-action@v1.0.1
         with: 
           repository: z3prover/z3
-
-      - name: list
-        run: ls
+          path: z3
         
       - name: set up python
         id: setup-python
