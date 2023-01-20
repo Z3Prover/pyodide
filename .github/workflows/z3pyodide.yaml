@@ -51,7 +51,7 @@ jobs:
         run: |
           ls
           cd z3/src/api/python
-          CFLAGS=-g2 LDFLAGS=-g2 pyodide build
+          pyodide build
 
       - name: set up node
         uses: actions/setup-node@v3
