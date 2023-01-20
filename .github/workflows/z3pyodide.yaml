@@ -46,7 +46,9 @@ jobs:
         run: pip install pyodide-build==$PYODIDE_VERSION
 
       - name: Build
-        run: CFLAGS=-g2 LDFLAGS=-g2 pyodide build
+        run: |
+          cd z3/src/api/python
+          CFLAGS=-g2 LDFLAGS=-g2 pyodide build
 
       - name: set up node
         uses: actions/setup-node@v3
