@@ -31,6 +31,9 @@ jobs:
         with: 
           repository: z3prover/z3
 
+      - name: list
+        run: ls
+        
       - name: set up python
         id: setup-python
         uses: actions/setup-python@v4
@@ -47,6 +50,7 @@ jobs:
 
       - name: Build
         run: |
+          ls
           cd z3/src/api/python
           CFLAGS=-g2 LDFLAGS=-g2 pyodide build
 
